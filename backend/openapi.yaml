@@ -1,0 +1,497 @@
+openapi: 3.0.3
+info:
+  title: Webshop Backend API
+  version: 1.0.0
+components:
+  schemas:
+    def-0:
+      type: object
+      required:
+        - id
+        - name
+        - description
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+      title: Category
+    def-1:
+      type: object
+      required:
+        - id
+        - vendorId
+        - warehouseId
+        - price
+        - currency
+        - shippingCost
+        - deliveryDays
+        - stock
+      properties:
+        id:
+          type: string
+        vendorId:
+          type: string
+        warehouseId:
+          type: string
+        price:
+          type: number
+        currency:
+          type: string
+          enum:
+            - EUR
+        shippingCost:
+          type: number
+        freeShippingThreshold:
+          type: number
+        deliveryDays:
+          type: object
+          required:
+            - min
+            - max
+          properties:
+            min:
+              type: number
+            max:
+              type: number
+        stock:
+          type: string
+          enum:
+            - NO
+            - LITTLE
+            - ALOT
+      title: Offer
+    def-2:
+      type: object
+      required:
+        - id
+        - sku
+        - name
+        - offers
+      properties:
+        id:
+          type: string
+        sku:
+          type: string
+        name:
+          type: string
+        attributes:
+          type: object
+        offers:
+          type: array
+          items:
+            $ref: "#/components/schemas/def-1"
+      title: Variant
+    def-3:
+      type: object
+      required:
+        - id
+        - categoryId
+        - name
+        - description
+        - tags
+        - variants
+      properties:
+        id:
+          type: string
+        categoryId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        brand:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        attributes:
+          type: object
+        variants:
+          type: array
+          items:
+            $ref: "#/components/schemas/def-2"
+      title: Product
+    def-4:
+      type: object
+      required:
+        - id
+        - name
+        - rating
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        rating:
+          type: number
+      title: Vendor
+    def-5:
+      type: object
+      required:
+        - id
+        - name
+        - country
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        country:
+          type: string
+        packageTax:
+          type: number
+      title: Warehouse
+    def-6:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          enum:
+            - OFFER_NOT_FOUND
+            - INVALID_QUANTITY
+            - OUT_OF_STOCK
+            - VOUCHER_NOT_FOUND
+            - VOUCHER_EXPIRED
+            - VOUCHER_MIN_ORDER_NOT_MET
+        message:
+          type: string
+        offerId:
+          type: string
+      title: CartIssue
+    def-7:
+      type: object
+      required:
+        - offerId
+        - productId
+        - variantId
+        - productName
+        - variantName
+        - quantity
+        - unitPrice
+        - lineTotal
+      properties:
+        offerId:
+          type: string
+        productId:
+          type: string
+        variantId:
+          type: string
+        productName:
+          type: string
+        variantName:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        lineTotal:
+          type: number
+      title: ShipmentItem
+    def-8:
+      type: object
+      required:
+        - vendorId
+        - warehouseId
+        - items
+        - itemsSubtotal
+        - shippingCost
+        - packageTax
+        - deliveryDays
+      properties:
+        vendorId:
+          type: string
+        warehouseId:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/def-7"
+        itemsSubtotal:
+          type: number
+        shippingCost:
+          type: number
+        packageTax:
+          type: number
+        deliveryDays:
+          type: object
+          required:
+            - min
+            - max
+          properties:
+            min:
+              type: number
+            max:
+              type: number
+      title: Shipment
+    def-9:
+      type: object
+      required:
+        - items
+        - shipping
+        - discount
+        - grand
+      properties:
+        items:
+          type: number
+        shipping:
+          type: number
+        discount:
+          type: number
+        grand:
+          type: number
+      title: Totals
+    def-10:
+      type: object
+      required:
+        - valid
+        - issues
+        - shipments
+        - totals
+        - packageCount
+      properties:
+        valid:
+          type: boolean
+        issues:
+          type: array
+          items:
+            $ref: "#/components/schemas/def-6"
+        shipments:
+          type: array
+          items:
+            $ref: "#/components/schemas/def-8"
+        totals:
+          $ref: "#/components/schemas/def-9"
+        deliveryDays:
+          nullable: true
+          type: object
+          required:
+            - min
+            - max
+          properties:
+            min:
+              type: number
+            max:
+              type: number
+        packageCount:
+          type: integer
+      title: ValidateResponse
+paths:
+  /health:
+    get:
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+  /categories:
+    get:
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/def-0"
+  /categories/{id}/products:
+    get:
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: id
+          required: true
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/def-3"
+        "404":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /products:
+    get:
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: category
+          required: false
+        - schema:
+            type: string
+          in: query
+          name: q
+          required: false
+        - schema:
+            type: string
+          in: query
+          name: minPrice
+          required: false
+        - schema:
+            type: string
+          in: query
+          name: maxPrice
+          required: false
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/def-3"
+  /products/{id}:
+    get:
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: id
+          required: true
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/def-3"
+        "404":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /vendors:
+    get:
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/def-4"
+  /vendors/{id}:
+    get:
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: id
+          required: true
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/def-4"
+        "404":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /warehouses:
+    get:
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/def-5"
+  /validate:
+    post:
+      description: Validate cart items and voucher code. Rate-limited to 5 requests
+        per minute per IP.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - items
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - offerId
+                      - quantity
+                    properties:
+                      offerId:
+                        type: string
+                      quantity:
+                        type: integer
+                        minimum: 1
+                voucherCode:
+                  type: string
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/def-10"
+        "429":
+          description: Rate limit exceeded. Maximum 5 requests per minute per IP.
+          content:
+            application/json:
+              schema:
+                description: Rate limit exceeded. Maximum 5 requests per minute per IP.
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  error:
+                    type: string
+                  message:
+                    type: string

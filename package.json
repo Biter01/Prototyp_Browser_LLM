@@ -1,0 +1,17 @@
+{
+  "name": "jku-webshop-llm",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.23.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter webshop-backend --filter webshop-frontend dev",
+    "dev:backend": "pnpm --filter webshop-backend dev",
+    "dev:frontend": "pnpm --filter webshop-frontend dev",
+    "build": "pnpm --filter webshop-frontend build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
+  }
+}

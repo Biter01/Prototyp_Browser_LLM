@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JKU Webshop · LLM-Chat</title>
+</head>
+<body>
+<header>
+  <h1>JKU Webshop · Chat mit lokalem LLM</h1>
+  <div class="controls">
+    <select id="model" aria-label="Modell"></select>
+    <select id="mode" aria-label="JSON-Modus">
+      <option value="schema">Schema erzwungen</option>
+      <option value="json">Nur JSON-Modus</option>
+      <option value="free">Frei (ohne Zwang)</option>
+    </select>
+    <button id="load" class="primary">Modell laden</button>
+    <progress id="progress" max="1" value="0"></progress>
+  </div>
+  <div id="status"></div>
+</header>
+<nav role="tablist">
+  <button class="tab" aria-selected="true" data-pane="chat-pane">Chat</button>
+  <button class="tab" aria-selected="false" data-pane="test-pane">Testlauf</button>
+</nav>
+<main>
+  <section id="chat-pane" class="pane">
+    <div class="panel">
+      <div class="suggest">
+        <button class="chip" data-suggest="Ich will ein Regen-Outfit für die JKU">Regen-Outfit für die JKU</button>
+        <button class="chip" data-suggest="Ich brauch Kopfhörer">Kopfhörer</button>
+        <button class="chip" data-suggest="Was habt ihr an Kleidung?">Was habt ihr an Kleidung?</button>
+        <button class="chip" data-suggest="Ich suche einen Kühlschrank">Kühlschrank</button>
+        <button class="chip" data-suggest="I brauch a Regnjacke für Herren in M unter 150 €">Regnjacke Herren M</button>
+        <button class="chip" data-suggest="Schreib mir ein Gedicht">Gedicht</button>
+      </div>
+      <div id="log" aria-live="polite"></div>
+      <div class="input-row">
+        <input id="input" type="text" placeholder="Was suchst du?" autocomplete="off">
+        <button id="send" class="primary">Senden</button>
+        <button id="reset">Neu</button>
+      </div>
+    </div>
+    <aside class="panel">
+      <h2>Warenkorb</h2>
+      <div id="cart"></div>
+      <p class="hint">Das Modell läuft lokal im Browser und erkennt nur, was du willst. Suche, Rückfragen und Warenkorb steuert der Code; gesucht wird über <code>GET /search</code> im Backend.</p>
+    </aside>
+  </section>
+  <section id="test-pane" class="pane" hidden>
+    <div class="controls">
+      <button id="run-tests" class="primary">Alle Tests starten</button>
+      <button id="copy">Ergebnisse kopieren</button>
+      <span class="muted small">Einzelsätze: erster JSON-Schritt des Modells. Dialoge: Zustand nach dem ganzen Gespräch.</span>
+    </div>
+    <div id="summary"></div>
+    <div class="table-wrap">
+      <table id="tests"><thead></thead><tbody></tbody></table>
+    </div>
+  </section>
+</main>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
